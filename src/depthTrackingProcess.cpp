@@ -62,20 +62,20 @@ void depthTrackingProcess::filterCloud(
   pass.setFilterLimits(0.0, max_range_);
   pass.filter(*cloud_out);
 
-  RCLCPP_DEBUG(
-    this->get_logger(), "Pass Through filter: %zu -> %zu points",
-    cloud_in->points.size(), cloud_out->points.size()
-  );
+  // RCLCPP_DEBUG(
+  //   this->get_logger(), "Pass Through filter: %zu -> %zu points",
+  //   cloud_in->points.size(), cloud_out->points.size()
+  // );
 
   pcl::VoxelGrid<PointT> vg;
   vg.setInputCloud(cloud_out);
   vg.setLeafSize(0.01f, 0.01f, 0.01f);
   vg.filter(*cloud_out);
 
-  RCLCPP_DEBUG(
-    this->get_logger(), "Voxel Grid filter: %zu -> %zu points",
-    cloud_in->points.size(), cloud_out->points.size()
-  );
+  // RCLCPP_DEBUG(
+  //   this->get_logger(), "Voxel Grid filter: %zu -> %zu points",
+  //   cloud_in->points.size(), cloud_out->points.size()
+  // );
 }
 
 void depthTrackingProcess::euClustering(
@@ -231,6 +231,11 @@ void depthTrackingProcess::buildOutput(
 
   visualization_msgs::msg::MarkerArray marker_array;
   marker_array.markers.clear();
+
+  visualization_msgs::msg::Marker clear_marker;
+  clear_marker.header = header;
+  clear_marker.action = visualization_msgs::msg::Marker::DELETEALL;
+  marker_array.markers.push_back(clear_marker);
 
   for (const auto &c : clusters) {
     // 포인트 색 입히기
